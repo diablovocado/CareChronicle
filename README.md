@@ -127,7 +127,7 @@ CareChronicle uses a distinctive **Pink-Led Theme** designed to evoke warmth, em
 
 ```mermaid
 flowchart TD
-    subgraph Client ["Client Experience Layer (Mobile PWA & Responsive Web)"]
+    subgraph Client ["Client Experience Layer - Mobile PWA and Responsive Web"]
         UI["Home • Medical Vault • Timeline • Appointments • Packages • Access"]
     end
 
@@ -150,17 +150,17 @@ flowchart TD
     end
 
     subgraph DataStore ["Core Storage & Security Layer"]
-        OBJ[("Encrypted Object Store (Original PDFs/Scans)")]
-        DB[("Relational DB (Cases, Events, Links)")]
+        OBJ[("Encrypted Object Store")]
+        DB[("Relational DB")]
         AUDIT[("Immutable Audit Log")]
     end
 
-    Client -->|REST API / HTTPS| AppServices
+    Client -->|"REST API / HTTPS"| AppServices
     AppServices --> INGEST
     INGEST --> NORM --> OCR --> CLASS --> EXTRACT --> LINKER --> CONF
-    CONF -->|Verified Entities| DB
-    INGEST -->|Raw Files (AES-256)| OBJ
-    AppServices -->|Access Logs| AUDIT
+    CONF -->|"Verified Entities"| DB
+    INGEST -->|"Raw Files - AES-256"| OBJ
+    AppServices -->|"Access Logs"| AUDIT
 ```
 
 ---
@@ -179,16 +179,16 @@ erDiagram
     CASE ||--o{ ACCESS_GRANT : shares
 
     DOCUMENT {
-        uuid id
+        string id
         string checksum
         string storage_key
         string mime_type
-        timestamp uploaded_at
+        string uploaded_at
     }
 
     DOCUMENT_METADATA {
         string doc_type
-        date document_date
+        string document_date
         string provider_name
         string facility_name
         float confidence_score
@@ -197,8 +197,8 @@ erDiagram
 
     PACKAGE {
         string package_type
-        json selected_documents
-        timestamp expiry_date
+        string selected_documents
+        string expiry_date
         string share_token
     }
 ```
@@ -248,7 +248,7 @@ gantt
     Appointments & Care Episodes    :2026-10-15, 20d
     Longitudinal Care Timeline      :2026-11-01, 15d
     section Phase 4: Outputs
-    "What Changed?" Comparison      :2026-11-15, 15d
+    What Changed Comparison        :2026-11-15, 15d
     Second Opinion & Insurance Pkgs :2026-12-01, 20d
 ```
 
