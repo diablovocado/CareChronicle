@@ -1,4 +1,4 @@
-# 🌸 CareChronicle
+# CareChronicle 🩺 
 
 <div align="center">
 
