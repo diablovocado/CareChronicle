@@ -1,9 +1,5 @@
 /* ==========================================================================
-   CareChronicle - Sample Fictional Data (v2.0 Phase 1)
-   Fictional Cases:
-   1. Self — Aarav Mehta (Oncology Care)
-   2. Parent — Meera Mehta (Senior Cardiac Care)
-   3. Family Member — Rajesh Mehta (General Care)
+   CareChronicle - Sample Fictional Data (v2.0 Phase 2 Extended Schema)
    ========================================================================== */
 
 const SampleData = {
@@ -48,103 +44,136 @@ const SampleData = {
       id: 'doc_01',
       caseId: 'case_aarav_01',
       title: 'Colonoscopy Pathology & Biopsy Report',
-      category: 'Pathology',
-      documentDate: '2026-08-10',
+      documentType: 'Pathology',
+      originalFileName: 'Apollo_Pathology_Biopsy_Aarav.pdf',
+      date: '2026-08-10',
+      dateType: 'report date',
       provider: 'Dr. Ramesh Kumar, MD',
       facility: 'Apollo Pathology Services',
+      status: 'Verified',
+      source: 'PDF',
       appointmentId: 'apt_01',
-      provenance: 'Original',
-      verificationState: 'Verified',
-      confidenceScore: 0.98,
-      fileSize: '2.1 MB',
-      summary: 'Infiltrating moderately differentiated adenocarcinoma. Tumor extends into submucosa. Surgical margins clear.',
+      careEventId: 'evt_01',
+      tags: ['Biopsy', 'Pathology', 'Colon', 'Cancer'],
+      originalContent: 'APOLLO PATHOLOGY REPORT\nPatient: Aarav Mehta (Age 48)\nSpecimen: Sigmoid Colon Biopsy\nDiagnosis: Moderately differentiated adenocarcinoma, Grade 2.',
       extractedData: {
-        specimen: 'Sigmoid Colon Biopsy',
-        histologicType: 'Adenocarcinoma',
-        grade: 'Grade 2 (Moderately Differentiated)',
-        margins: 'Negative'
-      }
+        specimen: { value: 'Sigmoid Colon Biopsy', confidence: 0.98, provenance: 'Extracted' },
+        histologicType: { value: 'Adenocarcinoma', confidence: 0.96, provenance: 'Extracted' },
+        grade: { value: 'Grade 2 (Moderately Differentiated)', confidence: 0.94, provenance: 'Extracted' },
+        margins: { value: 'Negative (Clear)', confidence: 0.92, provenance: 'Extracted' }
+      },
+      confidence: 0.98,
+      provenance: 'Original',
+      uploadedAt: '2026-08-11T10:14:00Z',
+      fileSize: '2.1 MB',
+      summary: 'Infiltrating moderately differentiated adenocarcinoma. Tumor extends into submucosa. Surgical margins clear.'
     },
     {
       id: 'doc_02',
       caseId: 'case_aarav_01',
       title: 'Contrast-Enhanced CT Abdomen & Pelvis',
-      category: 'Imaging',
-      documentDate: '2026-08-14',
+      documentType: 'Imaging',
+      originalFileName: 'CT_Scan_Abdomen_Aarav.dcm.pdf',
+      date: '2026-08-14',
+      dateType: 'appointment date',
       provider: 'Dr. Priya Nair (Radiology)',
       facility: 'Apollo Diagnostic Imaging',
+      status: 'Verified',
+      source: 'Scan',
       appointmentId: 'apt_01',
-      provenance: 'Extracted',
-      verificationState: 'Verified',
-      confidenceScore: 0.94,
-      fileSize: '4.5 MB',
-      summary: '3.1 cm focal wall thickening in sigmoid colon. No evidence of distant hepatic or pulmonary metastasis.',
+      careEventId: 'evt_02',
+      tags: ['CT Scan', 'Imaging', 'Staging', 'Abdomen'],
+      originalContent: 'CT ABDOMEN & PELVIS WITH CONTRAST\nIndication: Staging for colon adenocarcinoma.\nFindings: 3.1 cm focal wall thickening in sigmoid colon.',
       extractedData: {
-        lesionSize: '3.1 x 2.4 cm',
-        stageEstimate: 'T2 N0 M0',
-        metastasis: 'None detected'
-      }
+        lesionSize: { value: '3.1 x 2.4 cm', confidence: 0.95, provenance: 'Extracted' },
+        stageEstimate: { value: 'T2 N0 M0', confidence: 0.91, provenance: 'Extracted' },
+        metastasis: { value: 'None detected', confidence: 0.93, provenance: 'Extracted' }
+      },
+      confidence: 0.94,
+      provenance: 'Extracted',
+      uploadedAt: '2026-08-14T16:30:00Z',
+      fileSize: '4.5 MB',
+      summary: '3.1 cm focal wall thickening in sigmoid colon. No evidence of distant hepatic or pulmonary metastasis.'
     },
     {
       id: 'doc_03',
       caseId: 'case_aarav_01',
       title: 'Pre-Operative CBC & Coagulation Profile',
-      category: 'Lab Results',
-      documentDate: '2026-08-28',
+      documentType: 'Laboratory',
+      originalFileName: 'CBC_Lab_Result_Aug28.pdf',
+      date: '2026-08-28',
+      dateType: 'report date',
       provider: 'Central Clinical Labs',
       facility: 'Apollo Hospital Labs',
+      status: 'Verification Required',
+      source: 'PDF',
       appointmentId: 'apt_02',
-      provenance: 'Extracted',
-      verificationState: 'Verified',
-      confidenceScore: 0.96,
-      fileSize: '1.2 MB',
-      summary: 'Hemoglobin 13.2 g/dL, Platelets 220,000 /uL, INR 1.05. Normal coagulation for scheduled resection.',
+      careEventId: 'evt_04',
+      tags: ['Blood Panel', 'CBC', 'Coagulation', 'Pre-Op'],
+      originalContent: 'LAB REPORT: Complete Blood Count\nHemoglobin: 13.2 g/dL\nWBC: 6.4 x10^3/uL\nPlatelets: 220,000 /uL\nINR: 1.05',
       extractedData: {
-        hemoglobin: '13.2 g/dL',
-        wbc: '6.4 x10^3/uL',
-        platelets: '220,000 /uL',
-        inr: '1.05'
-      }
+        hemoglobin: { value: '13.2 g/dL', confidence: 0.96, provenance: 'Extracted' },
+        wbc: { value: '6.4 x10^3/uL', confidence: 0.94, provenance: 'Extracted' },
+        platelets: { value: '220,000 /uL', confidence: 0.92, provenance: 'Extracted' },
+        inr: { value: '1.05', confidence: 0.64, provenance: 'Suggested' } // Low confidence trigger!
+      },
+      confidence: 0.64,
+      provenance: 'Extracted',
+      uploadedAt: '2026-08-28T09:12:00Z',
+      fileSize: '1.2 MB',
+      summary: 'Hemoglobin 13.2 g/dL, Platelets 220,000 /uL, INR 1.05. Normal coagulation for scheduled resection.'
     },
     {
       id: 'doc_04',
       caseId: 'case_aarav_01',
-      title: 'Surgical Oncology Consultation & Plan',
-      category: 'Doctor Note',
-      documentDate: '2026-08-15',
+      title: 'Surgical Oncology Consultation Note',
+      documentType: 'Consultation Note',
+      originalFileName: 'Surgical_Consult_DrSharma.pdf',
+      date: '2026-08-15',
+      dateType: 'appointment date',
       provider: 'Dr. Ananya Sharma',
       facility: 'Apollo Cancer Centre',
+      status: 'Verified',
+      source: 'PDF',
       appointmentId: 'apt_01',
-      provenance: 'Extracted',
-      verificationState: 'Verified',
-      confidenceScore: 0.97,
-      fileSize: '780 KB',
-      summary: 'Laparoscopic Sigmoid Colectomy planned for Sept 12, 2026. Pre-hab dietary and physical instructions provided.',
+      careEventId: 'evt_03',
+      tags: ['Consultation', 'Surgical Plan', 'Oncology'],
+      originalContent: 'SURGICAL ONCOLOGY CONSULTATION NOTE\nPatient: Aarav Mehta\nPlan: Laparoscopic Sigmoid Colectomy scheduled for Sept 12, 2026.',
       extractedData: {
-        plannedProcedure: 'Laparoscopic Sigmoid Colectomy',
-        scheduledDate: '2026-09-12',
-        hospitalStay: '3-4 Days'
-      }
+        plannedProcedure: { value: 'Laparoscopic Sigmoid Colectomy', confidence: 0.98, provenance: 'Extracted' },
+        scheduledDate: { value: '2026-09-12', confidence: 0.95, provenance: 'Extracted' }
+      },
+      confidence: 0.97,
+      provenance: 'Extracted',
+      uploadedAt: '2026-08-15T14:20:00Z',
+      fileSize: '780 KB',
+      summary: 'Laparoscopic Sigmoid Colectomy planned for Sept 12, 2026. Pre-hab dietary and physical instructions provided.'
     },
     {
       id: 'doc_05',
       caseId: 'case_meera_02',
       title: '24-Hour Holter ECG Monitoring Report',
-      category: 'Cardiology',
-      documentDate: '2026-07-22',
+      documentType: 'Cardiology',
+      originalFileName: 'Holter_ECG_Meera.pdf',
+      date: '2026-07-22',
+      dateType: 'report date',
       provider: 'Dr. Vikram Patel',
       facility: 'Max Super Speciality Hospital',
-      appointmentId: 'apt_03',
-      provenance: 'Original',
-      verificationState: 'Verified',
-      confidenceScore: 0.95,
-      fileSize: '3.4 MB',
-      summary: 'Sinus rhythm with occasional premature atrial contractions (PACs). No prolonged sinus pauses observed.',
+      status: 'Verified',
+      source: 'PDF',
+      appointmentId: null,
+      careEventId: null,
+      tags: ['ECG', 'Holter', 'Cardiac', 'Arrhythmia'],
+      originalContent: '24-HOUR HOLTER MONITORING REPORT\nPatient: Meera Mehta (Age 74)\nFindings: Sinus rhythm with occasional premature atrial contractions (PACs).',
       extractedData: {
-        avgHeartRate: '72 bpm',
-        maxHeartRate: '118 bpm',
-        pacs: '142 total events'
-      }
+        avgHeartRate: { value: '72 bpm', confidence: 0.95, provenance: 'Extracted' },
+        pacs: { value: '142 total events', confidence: 0.92, provenance: 'Extracted' }
+      },
+      confidence: 0.95,
+      provenance: 'Original',
+      uploadedAt: '2026-07-23T11:00:00Z',
+      fileSize: '3.4 MB',
+      summary: 'Sinus rhythm with occasional premature atrial contractions (PACs). No prolonged sinus pauses observed.'
     }
   ],
 

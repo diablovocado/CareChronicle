@@ -1,11 +1,8 @@
 /* ==========================================================================
-   CareChronicle - Global UI Utilities & Component Helpers (v2.0 Phase 1)
+   CareChronicle - Global UI Utilities & Component Helpers (v2.0 Phase 2)
    ========================================================================== */
 
 const utils = {
-  // ------------------------------------------------------------------------
-  // Toast Notification Infrastructure
-  // ------------------------------------------------------------------------
   showToast(message, type = 'info') {
     let container = document.getElementById('toastContainer');
     if (!container) {
@@ -36,9 +33,6 @@ const utils = {
     }, 3500);
   },
 
-  // ------------------------------------------------------------------------
-  // Modal Infrastructure
-  // ------------------------------------------------------------------------
   openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
@@ -57,14 +51,12 @@ const utils = {
     }
   },
 
-  // ------------------------------------------------------------------------
-  // Drawer Infrastructure
-  // ------------------------------------------------------------------------
   openDrawer(drawerId) {
     const drawer = document.getElementById(drawerId);
     if (drawer) {
       drawer.classList.add('active');
       drawer.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
     }
   },
 
@@ -73,12 +65,10 @@ const utils = {
     if (drawer) {
       drawer.classList.remove('active');
       drawer.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
     }
   },
 
-  // ------------------------------------------------------------------------
-  // Confirmation Dialog System
-  // ------------------------------------------------------------------------
   confirmDialog(title, message, onConfirm) {
     let confirmModal = document.getElementById('globalConfirmModal');
     if (!confirmModal) {
@@ -113,9 +103,23 @@ const utils = {
     utils.openModal('globalConfirmModal');
   },
 
-  // ------------------------------------------------------------------------
-  // Loading & Empty States
-  // ------------------------------------------------------------------------
+  // Confidence Threshold Renderer: >= 90% (High), 70-89% (Review Recommended), < 70% (Verification Required)
+  renderConfidenceBadge(confidenceScore) {
+    const percent = Math.round(confidenceScore * 100);
+    if (percent >= 90) {
+      return `<span class="badge-confidence high"><i class="fa-solid fa-circle-check"></i> ${percent}% Confidence (High)</span>`;
+    } else if (percent >= 70) {
+      return `<span class="badge-confidence medium"><i class="fa-solid fa-triangle-exclamation"></i> ${percent}% Confidence (Review)</span>`;
+    } else {
+      return `<span class="badge-confidence low"><i class="fa-solid fa-circle-exclamation"></i> ${percent}% Confidence (Action Needed)</span>`;
+    }
+  },
+
+  // Date Type Label Badge
+  renderDateTypeBadge(dateType = 'report date') {
+    return `<span class="badge-datetype"><i class="fa-regular fa-clock"></i> ${dateType}</span>`;
+  },
+
   createEmptyState(title, subtitle, icon = 'fa-folder-open') {
     return `
       <div class="empty-state">

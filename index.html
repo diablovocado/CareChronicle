@@ -126,20 +126,38 @@
     </nav>
   </div>
 
-  <!-- UPLOAD MODAL PLACEHOLDER -->
+  <!-- PHASE 2 UPLOAD & STAGED PROCESSING MODAL -->
   <div class="modal-overlay" id="uploadModal" aria-hidden="true">
     <div class="modal-content">
       <div class="modal-header">
         <h3 style="font-size: 18px;">Upload Medical Record</h3>
         <i class="fa-solid fa-xmark modal-close" onclick="utils.closeModal('uploadModal')"></i>
       </div>
-      <div style="border: 2px dashed var(--soft-pink); border-radius: var(--radius-lg); padding: 40px 20px; text-align: center; background: var(--ultra-light-pink);">
+
+      <!-- Dropzone State -->
+      <div id="fileDropzone" style="border: 2px dashed var(--soft-pink); border-radius: var(--radius-lg); padding: 32px 20px; text-align: center; background: var(--ultra-light-pink);">
         <i class="fa-solid fa-cloud-arrow-up" style="font-size: 40px; color: var(--primary-pink); margin-bottom: 12px;"></i>
-        <h4 style="font-size: 16px; margin-bottom: 6px;">Document Ingestion Dropzone</h4>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Original files are encrypted & preserved. Document Intelligence OCR pipeline activates in Phase 2.</p>
-        <button class="btn btn-primary btn-sm" onclick="utils.showToast('Upload Ingestion Pipeline ready for Phase 2'); utils.closeModal('uploadModal');">
-          Simulate Document Upload
-        </button>
+        <h4 style="font-size: 16px; margin-bottom: 6px;">Drag & Drop Medical Records</h4>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Supports PDF, JPEG, PNG (Max 25MB per file). Raw file is preserved as source of truth.</p>
+        
+        <input type="file" id="fileInput" hidden accept=".pdf,.png,.jpg,.jpeg">
+        
+        <div style="display: flex; justify-content: center; gap: 12px;">
+          <button class="btn btn-primary btn-sm" onclick="document.getElementById('fileInput').click()">
+            <i class="fa-solid fa-folder-open"></i> Browse Files
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="HomeModule.startStagedUploadSimulation({ name: 'Mobile_Scan_Lab_Result.pdf', size: 1850000 })">
+            <i class="fa-solid fa-camera"></i> Camera Capture (Mobile)
+          </button>
+        </div>
+      </div>
+
+      <!-- Staged Processing Progress Animation -->
+      <div id="uploadProgressArea" style="display: none;">
+        <h4 style="font-size: 15px; color: var(--dark-pink); margin-bottom: 12px;">
+          <i class="fa-solid fa-gear fa-spin" style="color: var(--primary-pink);"></i> Document Intelligence Pipeline
+        </h4>
+        <div class="processing-steps-container" id="stagedProcessingSteps"></div>
       </div>
     </div>
   </div>
@@ -159,5 +177,19 @@
 
   <!-- Main Controller -->
   <script src="js/app.js"></script>
+  
+  <script>
+    // Bind File Input Change Listener for Upload Simulation
+    document.addEventListener('DOMContentLoaded', () => {
+      const fileInput = document.getElementById('fileInput');
+      if (fileInput) {
+        fileInput.onchange = (e) => {
+          if (e.target.files.length > 0) {
+            HomeModule.startStagedUploadSimulation(e.target.files[0]);
+          }
+        };
+      }
+    });
+  </script>
 </body>
 </html>

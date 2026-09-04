@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CareChronicle - Centralized Application State Management (v2.0 Phase 1)
+   CareChronicle - Centralized Application State Management (v2.0 Phase 2)
    ========================================================================== */
 
 class CareStore {
@@ -14,9 +14,11 @@ class CareStore {
       permissions: SampleData.permissions,
       ui: {
         activeView: 'home-view',
-        vaultCategoryFilter: 'all',
+        vaultFilterType: 'all',
+        vaultFilterProvider: 'all',
+        vaultFilterProvenance: 'all',
+        vaultFilterStatus: 'all',
         searchQuery: '',
-        isLoading: false,
         activeModal: null,
         activeDrawer: null
       }
@@ -30,7 +32,6 @@ class CareStore {
     return this._state;
   }
 
-  // Subscribe for State Change Notifications
   subscribe(callback) {
     this._subscribers.push(callback);
     return () => {
@@ -38,18 +39,15 @@ class CareStore {
     };
   }
 
-  // Notify Subscribers
   _notify(keyChanged) {
     this._subscribers.forEach(cb => cb(this._state, keyChanged));
   }
 
-  // Set Entire State
   setState(newState) {
     this._state = { ...this._state, ...newState };
     this._notify('all');
   }
 
-  // Update Partial State
   updateState(partialState) {
     this._state = {
       ...this._state,
@@ -62,33 +60,87 @@ class CareStore {
     this._notify('partial');
   }
 
-  // Helper: Get Currently Active Patient Case
   getActiveCase() {
     return this._state.cases.find(c => c.id === this._state.activeCaseId) || this._state.cases[0];
   }
 
-  // Helper: Switch Active Patient Case
   switchCase(newCaseId) {
     if (this._state.activeCaseId === newCaseId) return;
     this.updateState({ activeCaseId: newCaseId });
     this._notify('caseSwitch');
   }
 
-  // Helper: Get Documents for Active Case
   getActiveDocuments() {
     return this._state.documents.filter(d => d.caseId === this._state.activeCaseId);
   }
 
-  // Helper: Get Appointments for Active Case
+  getUnverifiedDocuments() {
+    return this.getActiveDocuments().filter(d => d.status === 'Verification Required' || d.confidence < 0.85);
+  }
+
   getActiveAppointments() {
     return this._state.appointments.filter(a => a.caseId === this._state.activeCaseId);
   }
 
-  // Helper: Get Timeline Events for Active Case
   getActiveTimeline() {
     return this._state.timelineEvents.filter(t => t.caseId === this._state.activeCaseId);
   }
+
+  // Phase 2 State Actions: Document Verification & Editing
+  verifyField(docId, fieldKey, newValue = null) {
+    const doc = this._state.documents.find(d => d.id === docId);
+    if (!doc || !doc.extractedData[fieldKey]) return;
+
+    if (newValue !== null) {
+      doc.extractedData[fieldKey].value = newValue;
+      doc.extractedData[fieldKey].provenance = 'User-Entered';
+    } else {
+      doc.extractedData[fieldKey].provenance = 'User-Entered';
+    }
+
+    doc.status = 'Verified';
+    doc.confidence = 1.0;
+    this._notify('documentVerified');
+  }
+
+  updateDocMetadata(docId, metadataObj) {
+    const doc = this._state.documents.find(d => d.id === docId);
+    if (!doc) return;
+
+    Object.assign(doc, metadataObj);
+    doc.provenance = 'User-Entered';
+    doc.status = 'Verified';
+    this._notify('documentUpdated');
+  }
+
+  linkAppointmentToDoc(docId, appointmentId) {
+    const doc = this._state.documents.find(d => d.id === docId);
+    if (!doc) return;
+
+    doc.appointmentId = appointmentId;
+    const apt = this._state.appointments.find(a => a.id === appointmentId);
+    if (apt && !apt.linkedDocIds.includes(docId)) {
+      apt.linkedDocIds.push(docId);
+    }
+    this._notify('appointmentLinked');
+  }
+
+  addDocument(docObj) {
+    this._state.documents.unshift(docObj);
+    
+    // Add timeline event automatically
+    this._state.timelineEvents.unshift({
+      id: 'evt_' + Date.now(),
+      caseId: docObj.caseId,
+      date: docObj.date,
+      title: 'Uploaded: ' + docObj.title,
+      category: docObj.documentType,
+      description: docObj.summary,
+      linkedDocId: docObj.id
+    });
+
+    this._notify('documentAdded');
+  }
 }
 
-// Global Store Instance
 window.store = new CareStore();
