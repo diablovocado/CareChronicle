@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareChronicle — Patient-Owned Medical Record & Care Organization</title>
+  <meta name="description" content="Organize the records. Preserve the story. Simplify the journey. A patient-owned digital medical record and care-organization platform.">
+  
+  <!-- FontAwesome Icons & Stylesheet -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="app">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div>
+        <div class="brand-container">
+          <div class="brand-logo">
+            <i class="fa-solid fa-heart-pulse"></i>
+          </div>
+          <div>
+            <div class="brand-title">CareChronicle</div>
+            <div class="brand-subtitle">Patient Medical Record</div>
+          </div>
+        </div>
+
+        <ul class="nav-list">
+          <li class="nav-item active">
+            <button data-target="home-view">
+              <i class="fa-solid fa-house"></i> Home
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-target="vault-view">
+              <i class="fa-solid fa-folder-closed"></i> Medical Vault
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-target="appointments-view">
+              <i class="fa-solid fa-calendar-check"></i> Appointments
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-target="timeline-view">
+              <i class="fa-solid fa-timeline"></i> Care Timeline
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-target="what-changed-view">
+              <i class="fa-solid fa-code-compare"></i> What Changed?
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-target="packages-view">
+              <i class="fa-solid fa-box-archive"></i> Action Packages
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-target="access-view">
+              <i class="fa-solid fa-user-shield"></i> Access & Privacy
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Active Case Context Card -->
+      <div class="case-selector-card">
+        <div class="case-header">
+          <span>Active Patient Case</span>
+          <i class="fa-solid fa-rotate text-muted" style="cursor: pointer;" title="Switch Case" id="switchCaseBtn"></i>
+        </div>
+        <div class="case-name" id="currentCaseName">Eleanor Vance</div>
+        <div class="case-condition" id="currentCaseCondition">Stage II Invasive Ductal Carcinoma</div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Area -->
+    <div class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="search-bar-container">
+          <i class="fa-solid fa-magnifying-glass text-muted"></i>
+          <input type="text" id="globalSearchInput" placeholder="Search records, lab values, providers, or dates...">
+        </div>
+
+        <div class="header-actions">
+          <button class="btn btn-primary" id="openUploadBtn">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Upload Record
+          </button>
+          <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--light-pink); color: var(--dark-pink); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+            EV
+          </div>
+        </div>
+      </header>
+
+      <!-- Scrollable Views Container -->
+      <main class="content-area">
+
+        <!-- 1. HOME VIEW -->
+        <section id="home-view" class="view-panel active">
+          <div class="hero-banner">
+            <div class="banner-content">
+              <h2>Welcome back, Eleanor</h2>
+              <p>Your longitudinal cancer care journey is organized. You have 1 upcoming oncology appointment and 6 verified medical records preserved in your Vault.</p>
+            </div>
+            <div class="banner-actions">
+              <button class="btn btn-primary" onclick="app.switchView('appointments-view')">
+                <i class="fa-solid fa-stethoscope"></i> Prepare for Visit
+              </button>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <!-- Left Column: Upcoming Visit & Recent Activity -->
+            <div>
+              <div class="appointment-highlight-card">
+                <div class="appointment-date-badge">
+                  <i class="fa-solid fa-calendar"></i> Next Visit: Sept 15, 2026 • 10:30 AM
+                </div>
+                <h3>Oncology Chemotherapy Cycle 2 Review</h3>
+                <div class="provider-info" style="margin-top: 8px;">
+                  <p><i class="fa-solid fa-user-doctor"></i> Dr. Sarah Jenkins, MD • Medical Oncology</p>
+                  <p><i class="fa-solid fa-location-dot"></i> St. Jude Cancer Center, Suite 400</p>
+                </div>
+                <div class="appointment-details">
+                  <div>
+                    <span style="font-size: 12px; opacity: 0.9;">2 Linked Documents • 3 Prepared Questions</span>
+                  </div>
+                  <button class="btn btn-outline" style="background: white; color: var(--dark-pink);" onclick="app.switchView('appointments-view')">
+                    Open Dossier
+                  </button>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Recent Medical Evidence
+                  </div>
+                  <button class="btn btn-outline btn-sm" onclick="app.switchView('vault-view')">View All Vault</button>
+                </div>
+                <div class="document-grid" id="recentDocsGrid">
+                  <!-- Rendered dynamically via app.js -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Verification Queue & Action Packages -->
+            <div>
+              <div class="card" style="border-left: 4px solid var(--primary-pink);">
+                <div class="card-title" style="margin-bottom: 12px; font-size: 16px;">
+                  <i class="fa-solid fa-shield-halved" style="color: var(--primary-pink);"></i> AI Trust System
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
+                  Every record preserves its original PDF/scan. Machine extractions & AI summaries are layer-linked to source evidence.
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <span class="badge-prov original"><i class="fa-solid fa-file-pdf"></i> Tier 1: Original Preserved</span>
+                  <span class="badge-prov extracted"><i class="fa-solid fa-robot"></i> Tier 2: OCR Extracted</span>
+                  <span class="badge-prov user"><i class="fa-solid fa-user-check"></i> Tier 3: Patient Verified</span>
+                  <span class="badge-prov suggested"><i class="fa-solid fa-wand-magic-sparkles"></i> Tier 4: Suggested</span>
+                  <span class="badge-prov generated"><i class="fa-solid fa-sparkles"></i> Tier 5: AI Summary</span>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">
+                    <i class="fa-solid fa-box-archive"></i> Quick Packages
+                  </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                  <button class="btn btn-outline" style="justify-content: flex-start;" onclick="app.openPackageModal('second-opinion')">
+                    <i class="fa-solid fa-notes-medical" style="color: var(--primary-pink);"></i> Second Opinion Packet
+                  </button>
+                  <button class="btn btn-outline" style="justify-content: flex-start;" onclick="app.openPackageModal('insurance')">
+                    <i class="fa-solid fa-file-invoice-dollar" style="color: var(--primary-pink);"></i> Insurance Claims Bundle
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. MEDICAL VAULT VIEW -->
+        <section id="vault-view" class="view-panel">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Medical Vault</h1>
+              <p class="view-subtitle">Immutable source records with searchable OCR extractions and verified metadata.</p>
+            </div>
+            <button class="btn btn-primary" onclick="app.openUploadModal()">
+              <i class="fa-solid fa-upload"></i> Upload Document
+            </button>
+          </div>
+
+          <!-- Vault Category Filter Pills -->
+          <div style="display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;" id="vaultFilterPills">
+            <button class="btn btn-secondary btn-sm active" data-filter="all">All Records</button>
+            <button class="btn btn-outline btn-sm" data-filter="Pathology">Pathology</button>
+            <button class="btn btn-outline btn-sm" data-filter="Lab Results">Lab Results</button>
+            <button class="btn btn-outline btn-sm" data-filter="Imaging">Imaging</button>
+            <button class="btn btn-outline btn-sm" data-filter="Doctor Note">Doctor Notes</button>
+            <button class="btn btn-outline btn-sm" data-filter="Prescription">Prescriptions</button>
+            <button class="btn btn-outline btn-sm" data-filter="Billing">Billing & Insurance</button>
+          </div>
+
+          <div class="document-grid" id="fullVaultGrid">
+            <!-- Dynamic Vault Cards -->
+          </div>
+        </section>
+
+        <!-- 3. APPOINTMENTS WORKSPACE VIEW -->
+        <section id="appointments-view" class="view-panel">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Appointment Dossier Workspace</h1>
+              <p class="view-subtitle">Visit-centered organization, pre-consultation preparation, and evidence summaries.</p>
+            </div>
+            <button class="btn btn-primary" onclick="app.generateDoctorSummary()">
+              <i class="fa-solid fa-file-pdf"></i> Generate 1-Page Summary
+            </button>
+          </div>
+
+          <div id="appointmentDossierContainer">
+            <!-- Dynamic Dossier Rendered via JS -->
+          </div>
+        </section>
+
+        <!-- 4. CARE TIMELINE VIEW -->
+        <section id="timeline-view" class="view-panel">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Longitudinal Care Timeline</h1>
+              <p class="view-subtitle">Chronological progression of diagnostic milestones, treatments, labs, and admissions.</p>
+            </div>
+          </div>
+
+          <div class="timeline-container" id="timelineList">
+            <!-- Dynamic Timeline Rendered via JS -->
+          </div>
+        </section>
+
+        <!-- 5. WHAT CHANGED COMPARISON VIEW -->
+        <section id="what-changed-view" class="view-panel">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">"What Changed?" Evidence Comparison</h1>
+              <p class="view-subtitle">Side-by-side comparison of successive reports, lab values, and clinical statements with source provenance.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 24px;">
+            <div style="display: flex; gap: 16px; align-items: center;">
+              <span style="font-weight: 600; font-size: 14px;">Select Comparison Pair:</span>
+              <select id="comparisonSelect" class="btn btn-outline" style="padding: 8px 16px;">
+                <option value="cbc">Lab Work: Mid-Cycle Blood Work vs Initial Chemotherapy Baseline</option>
+                <option value="mri">Imaging: Baseline Diagnostic MRI vs Ultrasound Report</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="comparisonContent">
+            <!-- Dynamic Comparison Columns Rendered via JS -->
+          </div>
+        </section>
+
+        <!-- 6. ACTION PACKAGES VIEW -->
+        <section id="packages-view" class="view-panel">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Action Package Builders</h1>
+              <p class="view-subtitle">Generate purpose-built, curated packets for consultations, second opinions, and insurance claims.</p>
+            </div>
+          </div>
+
+          <div class="package-card">
+            <div style="display: flex; gap: 20px; align-items: center;">
+              <div class="package-icon">
+                <i class="fa-solid fa-notes-medical"></i>
+              </div>
+              <div>
+                <h3 style="font-size: 18px;">Second Opinion Package Builder</h3>
+                <p style="font-size: 14px; color: var(--text-muted);">Curates pathology, radiology, surgical notes, and treatment plans into an organized clinical index with original attachments.</p>
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="app.openPackageModal('second-opinion')">Build Packet</button>
+          </div>
+
+          <div class="package-card">
+            <div style="display: flex; gap: 20px; align-items: center;">
+              <div class="package-icon">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+              </div>
+              <div>
+                <h3 style="font-size: 18px;">Insurance Claims & Financial Bundle</h3>
+                <p style="font-size: 14px; color: var(--text-muted);">Collates hospital invoices, pharmacy receipts, pre-authorizations, and clinical notes for an episode of care with presence auditing.</p>
+              </div>
+            </div>
+            <button class="btn btn-secondary" onclick="app.openPackageModal('insurance')">Build Bundle</button>
+          </div>
+        </section>
+
+        <!-- 7. ACCESS & PRIVACY VIEW -->
+        <section id="access-view" class="view-panel">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Caregiver Access & Privacy Controls</h1>
+              <p class="view-subtitle">Manage shared permissions, audit access history, and enforce zero-trust privacy controls.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-users"></i> Authorized Caregivers</div>
+              <button class="btn btn-primary btn-sm" id="inviteCaregiverBtn"><i class="fa-solid fa-user-plus"></i> Invite Caregiver</button>
+            </div>
+            <div id="caregiversList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title" style="margin-bottom: 16px;"><i class="fa-solid fa-clock-rotate-left"></i> Security Audit Log</div>
+            <div id="auditLogList" style="font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px;">
+              <div>• <strong>2026-09-04 21:15</strong> — David Vance viewed CBC & CMP Lab Report (doc_lab_cbc_01)</div>
+              <div>• <strong>2026-09-02 14:02</strong> — System AI extracted lab values from doc_lab_cbc_01 (Confidence: 0.95)</div>
+              <div>• <strong>2026-08-25 10:30</strong> — Eleanor Vance created case case_eleanor_01</div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- UPLOAD MODAL -->
+  <div class="modal-overlay" id="uploadModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size: 20px;">Upload Medical Record</h3>
+        <i class="fa-solid fa-xmark modal-close" onclick="app.closeModal('uploadModal')"></i>
+      </div>
+      <div class="dropzone" id="fileDropzone">
+        <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+        <h4 style="font-size: 16px; margin-bottom: 6px;">Drag & Drop PDFs, Scans, or Photos</h4>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Original files are encrypted & preserved. Document Intelligence extracts metadata automatically.</p>
+        <input type="file" id="fileInput" hidden accept=".pdf,.png,.jpg,.jpeg">
+        <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">Browse Files</button>
+      </div>
+
+      <div id="uploadProgressArea" style="display: none; margin-top: 20px;">
+        <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px;" id="uploadStatusText">Running Document Intelligence OCR...</div>
+        <div style="width: 100%; height: 8px; background: var(--ultra-light-pink); border-radius: 4px; overflow: hidden;">
+          <div id="uploadProgressBar" style="width: 0%; height: 100%; background: var(--primary-pink); transition: width 0.4s ease;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCUMENT DETAIL MODAL -->
+  <div class="modal-overlay" id="docDetailModal">
+    <div class="modal-content" style="max-width: 780px;">
+      <div class="modal-header">
+        <div>
+          <h3 id="modalDocTitle" style="font-size: 18px;">Document Details</h3>
+          <span class="badge-prov original" id="modalDocProv">ORIGINAL</span>
+        </div>
+        <i class="fa-solid fa-xmark modal-close" onclick="app.closeModal('docDetailModal')"></i>
+      </div>
+      <div id="modalDocBody">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- PACKAGE MODAL -->
+  <div class="modal-overlay" id="packageModal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 id="packageModalTitle" style="font-size: 20px;">Package Exporter</h3>
+        <i class="fa-solid fa-xmark modal-close" onclick="app.closeModal('packageModal')"></i>
+      </div>
+      <div id="packageModalBody">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- JavaScript Scripts -->
+  <script src="js/state.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
